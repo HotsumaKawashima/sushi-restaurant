@@ -2,6 +2,7 @@ import Foundation
 
 var input1 = "8 2\n5 2\n0 1\n0 2\n2 3\n4 3\n6 1\n1 5\n7 3"
 var input2 = "8 5\n0 6 4 3 7\n0 1\n0 2\n2 3\n4 3\n6 1\n1 5\n7 3"
+var input3 = "7 2\n5 0\n4 0\n3 1\n0 6\n0 1\n2 1\n5 2"
 
 let INF = 999999
 
@@ -35,6 +36,21 @@ func printTable(_ name: String, _ table: [[Int]]) {
     }
 }
 
+func read() {
+    var first = readLine(strippingNewline: true)!
+    N = Int(first.components(separatedBy: " ")[0])!
+    M = Int(first.components(separatedBy: " ")[1])!
+    var second = readLine(strippingNewline: true)!
+    real = second.components(separatedBy: " ").map{ Int($0)! }
+    connect = [[Int]](repeating: [Int](), count: N)
+    for i in 2...N {
+        var row = readLine(strippingNewline: true)!
+        var temp = row.components(separatedBy: " ").map{ Int($0)! }
+        connect[temp[0]].append(temp[1])
+        connect[temp[1]].append(temp[0])
+    }    
+}
+
 func initialize(_ input: String) {
     var row = input.components(separatedBy: .newlines)
     N = Int(row[0].components(separatedBy: " ")[0])!
@@ -52,6 +68,10 @@ var comb = [[Int]]()
 
 func makeComb(_ array: [Int]) {
     comb = [[Int]]()
+    if array.count == 2 {
+        comb = [array]
+        return
+    }
     _makeComb([Int](array), [])
 }
 
@@ -101,22 +121,34 @@ func min(_ array: [[Int]]) {
     }
 }
 
-initialize(input1)
+//initialize(input1)
 
-print("N: \(N)")
-print("M: \(M)")
-print("real: \(real)")
-print("connect: \(connect)")
+//print("N: \(N)")
+//print("M: \(M)")
+//print("real: \(real)")
+//print("connect: \(connect)")
 
+//makeComb(real)
+//print("comb: \(comb)")
+
+//min(5, 2)
+//printTable("path: ", path)
+//print("result: \(result)")
+
+//initialize(input2)
+//makeComb(real)
+//print("comb: \(comb)")
+//min(comb)
+//print("result: \(resultArray)")
+
+//initialize(input3)
+//print(real)
+//makeComb(real)
+//print("comb: \(comb)")
+//min(comb)
+//print("result: \(resultArray)")
+
+read()
 makeComb(real)
-print("comb: \(comb)")
-
-min(5, 2)
-printTable("path: ", path)
-print("result: \(result)")
-
-initialize(input2)
-makeComb(real)
-print("comb: \(comb)")
 min(comb)
-print("result: \(resultArray)")
+print(resultArray)
