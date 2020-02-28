@@ -3,6 +3,7 @@ import Foundation
 var input1 = "8 2\n5 2\n0 1\n0 2\n2 3\n4 3\n6 1\n1 5\n7 3"
 var input2 = "8 5\n0 6 4 3 7\n0 1\n0 2\n2 3\n4 3\n6 1\n1 5\n7 3"
 var input3 = "7 2\n5 0\n4 0\n3 1\n0 6\n0 1\n2 1\n5 2"
+var input4 = "9 3\n0 8 1\n7 6\n7 2\n8 3\n1 2\n2 5\n3 4\n0 6\n2 3"
 
 let INF = 999999
 
@@ -76,12 +77,14 @@ func makeComb(_ array: [Int]) {
 }
 
 func _makeComb(_ array: [Int], _ progress: [Int]) {
-    if array.count == 1 {
+    if array.count == 0 {
         comb.append(progress)
         return
     }
-    for i in 1..<array.count {
-        _makeComb([Int](array[..<i]) + [Int](array[(i + 1)...]), progress + [array[i]])
+    for i in 0..<array.count {
+        var temp = array
+        temp.remove(at: i)
+        _makeComb(temp, progress + [array[i]])
     }
 }
 
@@ -152,3 +155,10 @@ read()
 makeComb(real)
 min(comb)
 print(resultArray)
+
+//initialize(input4)
+//print(real)
+//makeComb(real)
+//print("comb: \(comb)")
+//min(comb)
+//print("result: \(resultArray)")
