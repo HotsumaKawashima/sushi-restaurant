@@ -1,6 +1,8 @@
 import Foundation
 
 let INF = 999999
+var minCount = 0
+var treeCount = 0
 
 func read() -> (N: Int, M: Int, real: [Int], connect: [[Int]]) {
     var line = readLine(strippingNewline: true)!
@@ -32,28 +34,71 @@ func initialize(_ input: String) -> (N: Int, M: Int, real: [Int], connect: [[Int
     return (N, M, real, connect)
 }
 
+func pushHeap(_ array: inout [(a: Int, b: Int, cost: Int)], _ v: (a: Int, b: Int, cost: Int)) {
+    var n = array.count
+    array.append(v)
+
+    while n != 0 {
+        let i = (n - 1) / 2
+        if array[i].cost > array[n].cost {
+            (array[i], array[n]) = (array[n], array[i])
+        }
+        n = i
+    }
+}
+
+func popHeap(_ array: inout [(a: Int, b: Int, cost: Int)]) -> (a: Int, b: Int, cost: Int) {
+    let n = array.count - 1
+    let small = array[0]
+    array[0] = array[n]
+    array.removeLast()
+    minHeapify(&array)
+    return small
+}
+
+func minHeapify(_ array: inout [(a: Int, b: Int, cost: Int)], _ i: Int = 0) {
+    let l = 2 * i + 1
+    let r = 2 * i + 2
+    let n = array.count - 1
+    var small = i
+
+    if l <= n && array[i].cost > array[l].cost {
+        small = l
+    }
+    if r <= n && array[small].cost > array[r].cost {
+        small = r
+    }
+    if small != i {
+        (array[i], array[small]) = (array[small], array[i])
+        minHeapify(&array, small)
+    }
+
+}
+
 func makeTree(_ real: [Int], _ connect:[[Int]]) -> ([[(to: Int, cost: Int)]]) {
     var E = real
-    var V = [Int]()
     var tree = [[(to: Int, cost:Int)]](repeating: [(to: Int, cost:Int)](), count: connect.count)
-    V.append(E[0])
-    E.removeFirst()
-    while E.count > 0 {
-        var path = (v: -1, e: -1, cost: INF)
-        for v in 0..<V.count {
-            for e in 0..<E.count {
-                var temp = min(V[v], E[e], connect)
-                if path.cost > temp {
-                    path = (v: v, e: e, cost: temp)
-                }
-            }
-        }
 
-        tree[V[path.v]].append((to: E[path.e], cost: path.cost))
-        tree[E[path.e]].append((to: V[path.v], cost: path.cost))
-        V.append(E[path.e])
-        E.remove(at: path.e)
+    var ways = [(a: Int, b: Int, cost: Int)]()
+    for a in 0..<E.count {
+        for b in a+1..<E.count {
+            treeCount = treeCount + 1
+            pushHeap(&ways, (a: E[a], b: E[b], cost: min(E[a], E[b], connect)))
+        }
     }
+
+    var seen = [Bool](repeating: false, count: connect.count)
+    for i in 0..<ways.count {
+        var way = popHeap(&ways)
+        if seen[way.a] && seen[way.b] {
+            continue
+        }
+        seen[way.a] = true
+        seen[way.b] = true
+        tree[way.a].append((to: way.b, cost: way.cost))
+        tree[way.b].append((to: way.a, cost: way.cost))
+    }
+    
     return tree
 }
 
@@ -87,6 +132,8 @@ func min(_ from: Int, _ to: Int, _ connect: [[Int]]) -> Int {
 }
 
 func _min(_ from: Int, _ to: Int, _ connect: [[Int]], _ cost: Int, _ table: inout [[Int]], _ result: inout Int) {
+    minCount = minCount + 1
+    var temp = [Int]()
     for middle in connect[from] {
         if table[from][middle] > cost {
             table[from][middle] = cost
@@ -96,8 +143,13 @@ func _min(_ from: Int, _ to: Int, _ connect: [[Int]], _ cost: Int, _ table: inou
                 }
                 return
             }
-            _min(middle, to, connect, 1 + cost, &table, &result)
+            //_min(middle, to, connect, 1 + cost, &table, &result)
+            temp.append(middle)
         }
+    }
+
+    for middle in temp {
+        _min(middle, to, connect, 1 + cost, &table, &result)
     }
 }
 
@@ -112,26 +164,28 @@ var input7 = "100 3\n68 30 23\n78 81\n51 0\n69 40\n60 38\n66 15\n54 4\n73 97\n22
 // 14
 
 
-let (M, N, real, connect) = initialize(input7)
-let tree = makeTree(real, connect)
-let total = calcTotal(tree)
-let from = searchLongest(real[0], tree)
-let longest = searchLongest(from.to, tree)
-let result = (total - longest.cost) * 2 + longest.cost
-
-print("M: \(M)")
-print("N: \(N)")
-print("real: \(real)")
-print("connect: \(connect)")
-print("tree: \(tree)")
-print("total: \(total)")
-print("longest: \(longest.cost)")
-print("result: \(result)")
-
-//let (M, N, real, connect) = read()
+//let (M, N, real, connect) = initialize(input7)
 //let tree = makeTree(real, connect)
 //let total = calcTotal(tree)
 //let from = searchLongest(real[0], tree)
 //let longest = searchLongest(from.to, tree)
 //let result = (total - longest.cost) * 2 + longest.cost
-//print(result)
+//
+//print("M: \(M)")
+//print("N: \(N)")
+//print("real: \(real)")
+//print("connect: \(connect)")
+//print("tree: \(tree)")
+//print("total: \(total)")
+//print("longest: \(longest.cost)")
+//print("result: \(result)")
+//print("minCount: \(minCount)")
+//print("treeCount: \(treeCount)")
+
+let (M, N, real, connect) = read()
+let tree = makeTree(real, connect)
+let total = calcTotal(tree)
+let from = searchLongest(real[0], tree)
+let longest = searchLongest(from.to, tree)
+let result = (total - longest.cost) * 2 + longest.cost
+print(result)
