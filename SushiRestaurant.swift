@@ -11,7 +11,7 @@ func read() -> (N: Int, M: Int, real: [Int], connect: [[Int]]) {
     line = readLine(strippingNewline: true)!
     let real = line.components(separatedBy: " ").map{ Int($0)! }
     var connect = [[Int]](repeating: [Int](), count: N)
-    for i in 0..<N - 1 {
+    for _ in 0..<N - 1 {
         line = readLine(strippingNewline: true)!
         var temp = line.components(separatedBy: " ").map{ Int($0)! }
         connect[temp[0]].append(temp[1])
@@ -52,11 +52,11 @@ func popHeap(_ array: inout [[Int]]) -> [Int] {
     let small = array[0]
     array[0] = array[n]
     array.removeLast()
-    minHeapify(&array)
+    maxHeapify(&array)
     return small
 }
 
-func minHeapify(_ array: inout [[Int]], _ i: Int = 0) {
+func maxHeapify(_ array: inout [[Int]], _ i: Int = 0) {
     let l = 2 * i + 1
     let r = 2 * i + 2
     let n = array.count - 1
@@ -70,7 +70,7 @@ func minHeapify(_ array: inout [[Int]], _ i: Int = 0) {
     }
     if small != i {
         (array[i], array[small]) = (array[small], array[i])
-        minHeapify(&array, small)
+        maxHeapify(&array, small)
     }
 }
 
@@ -78,11 +78,35 @@ func calcLongest(_ real: [Int],_ ways: inout [[Int]], _ connect: [[Int]]) -> [In
     let longest = popHeap(&ways)
     let from = longest[longest.count - 1]
     var _ways = calcWays(from, real, connect)
-    var to = popHeap(&_ways)
+    let to = popHeap(&_ways)
     if longest.count > to.count {
         return longest
     }
     return to
+}
+
+func makeTree(_ ways: [[Int]], _ M: Int) -> (tree: [[Int]], count: Int) {
+    var seen = [[Bool]](repeating: [Bool](repeating: false, count: M), count: M)
+    var tree = [[Int]](repeating: [Int](), count: M)
+
+    var count = 0
+    for way in ways {
+        for i in 1..<way.count {
+            let a = way[i]
+            let b = way[i - 1]
+            if seen[a][b] {
+                continue
+            }
+
+            seen[a][b] = true
+            seen[b][a] = true
+            tree[a].append(b)
+            tree[b].append(a)
+            count = count + 1
+        }
+    }
+
+    return (tree, count)
 }
 
 func calcWays(_ from: Int, _ real: [Int], _ connect:[[Int]]) -> ([[Int]]) {
@@ -95,33 +119,6 @@ func calcWays(_ from: Int, _ real: [Int], _ connect:[[Int]]) -> ([[Int]]) {
     }
 
     return ways
-}
-
-func calcTotal(_ ways: [[Int]], _ M: Int) -> Int {
-    var seen = [[Bool]](repeating: [Bool](repeating: false, count: M), count: M)
-    var a = 0
-    var b = 0
-    var count = 0
-    for way in ways {
-        for i in 1..<way.count {
-            if way[i - 1] > way[i] {
-                a = way[i]
-                b = way[i - 1]
-            } else {
-                a = way[i - 1]
-                b = way[i]
-            }
-
-            if seen[a][b] {
-                continue
-            }
-
-            seen[a][b] = true
-            count = count + 1
-        }
-    }
-    
-    return count
 }
 
 func min(_ from: Int, _ to: Int, _ connect: [[Int]]) -> [Int] {
@@ -170,9 +167,9 @@ var input13 = "100 8\n25 47 93 2 69 21 46 42\n99 87\n26 73\n45 11\n88 90\n12 67\
 
 //let (M, N, real, connect) = initialize(input13)
 //let ways = calcWays(real[0], real, connect)
-//let total = calcTotal(ways, M)
+//let (tree, total) = makeTree(ways, M)
 //var copyWays = ways
-//let longest = calcLongest(real, &copyWays, connect)
+//let longest = calcLongest(real, &copyWays, tree)
 //let result = (total - (longest.count - 1)) * 2 + longest.count - 1
 //
 //print("M: \(M)")
@@ -188,10 +185,9 @@ var input13 = "100 8\n25 47 93 2 69 21 46 42\n99 87\n26 73\n45 11\n88 90\n12 67\
 //print("treeCount: \(treeCount)")
 
 let (M, N, real, connect) = read()
-let ways = calcWays(real[0], real, connect)
-let total = calcTotal(ways, M)
-var copyWays = ways
-let longest = calcLongest(real, &copyWays, connect)
+var ways = calcWays(real[0], real, connect)
+let (tree, total) = makeTree(ways, M)
+let longest = calcLongest(real, &ways, tree)
 let result = (total - (longest.count - 1)) * 2 + longest.count - 1
 //print("minCount: \(minCount)")
 //print("treeCount: \(treeCount)")
