@@ -34,7 +34,48 @@ func initialize(_ input: String) -> (N: Int, M: Int, real: [Int], connect: [[Int
     return (N, M, real, connect)
 }
 
-func pushHeap(_ array: inout [[Int]], _ v: [Int]) {
+func pushMinHeap(_ array: inout [(way: [Int], back:[Int])], _ v: (way: [Int], back:[Int])) {
+    var n = array.count
+    array.append(v)
+
+    while n != 0 {
+        let i = (n - 1) / 2
+        if array[i].back.count > array[n].back.count {
+            (array[i], array[n]) = (array[n], array[i])
+        }
+        n = i
+    }
+}
+
+func popMinHeap(_ array: inout [(way: [Int], back:[Int])]) -> (way: [Int], back:[Int]) {
+
+    let n = array.count - 1
+    let value = array[0]
+    array[0] = array[n]
+    array.removeLast()
+    minHeapify(&array)
+    return value
+}
+
+func minHeapify(_ array: inout [(way: [Int], back:[Int])], _ i: Int = 0) {
+    let l = 2 * i + 1
+    let r = 2 * i + 2
+    let n = array.count - 1
+    var value = i
+
+    if l <= n && array[i].back.count > array[l].back.count {
+        value = l
+    }
+    if r <= n && array[value].back.count > array[r].back.count {
+        value = r
+    }
+    if value != i {
+        (array[i], array[value]) = (array[value], array[i])
+        minHeapify(&array, value)
+    }
+}
+
+func pushMaxHeap(_ array: inout [[Int]], _ v: [Int]) {
     var n = array.count
     array.append(v)
 
@@ -47,42 +88,39 @@ func pushHeap(_ array: inout [[Int]], _ v: [Int]) {
     }
 }
 
-func popHeap(_ array: inout [[Int]]) -> [Int] {
+func popMaxHeap(_ array: inout [[Int]]) -> [Int] {
     let n = array.count - 1
-    let small = array[0]
+    let value = array[0]
     array[0] = array[n]
     array.removeLast()
     maxHeapify(&array)
-    return small
+    return value
 }
 
 func maxHeapify(_ array: inout [[Int]], _ i: Int = 0) {
     let l = 2 * i + 1
     let r = 2 * i + 2
     let n = array.count - 1
-    var small = i
+    var value = i
 
     if l <= n && array[i].count < array[l].count {
-        small = l
+        value = l
     }
-    if r <= n && array[small].count < array[r].count {
-        small = r
+    if r <= n && array[value].count < array[r].count {
+        value = r
     }
-    if small != i {
-        (array[i], array[small]) = (array[small], array[i])
-        maxHeapify(&array, small)
+    if value != i {
+        (array[i], array[value]) = (array[value], array[i])
+        maxHeapify(&array, value)
     }
 }
 
-func calcLongest(_ real: [Int],_ ways: inout [[Int]], _ connect: [[Int]]) -> [Int] {
-    let longest = popHeap(&ways)
+func calcLongest(_ real: [Int],_ ways: inout [[Int]], _ connect: [[Int]]) -> (longest: [Int], ways: [[Int]]) {
+    let longest = popMaxHeap(&ways)
     let from = longest[longest.count - 1]
     var _ways = calcWays(from, real, connect)
-    let to = popHeap(&_ways)
-    if longest.count > to.count {
-        return longest
-    }
-    return to
+    let to = popMaxHeap(&_ways)
+    return (to, _ways)
 }
 
 func makeTree(_ ways: [[Int]], _ M: Int) -> (tree: [[Int]], count: Int) {
@@ -115,7 +153,7 @@ func calcWays(_ from: Int, _ real: [Int], _ connect:[[Int]]) -> ([[Int]]) {
     for i in 0..<real.count {
         if real[i] == from { continue }
         treeCount = treeCount + 1
-        pushHeap(&ways, min(from, real[i], connect))
+        pushMaxHeap(&ways, min(from, real[i], connect))
     }
 
     return ways
@@ -149,6 +187,66 @@ func _min(_ from: Int, _ to: Int, _ connect: [[Int]], _ cost: Int, _ table: inou
     }
 }
 
+func walk(_ from: Int, _ tree: [[Int]], _ parent: Int = -1) -> (way: [Int], back: [Int]) {
+    var pass = [Int]()
+    var heap = [(way: [Int], back:[Int])]()
+
+    if tree[from].count == 1 && tree[from][0] == parent {
+        return ([from], [])
+    }
+
+    for p in tree[from] {
+        if p == parent { continue }
+        pushMinHeap(&heap, walk(p, tree, from))
+    }
+
+    var before = popMinHeap(&heap)
+    pass = pass + [from] + before.way
+
+    for _ in 0..<heap.count {
+        var next = popMinHeap(&heap)
+        pass += before.back + [from] + next.way
+        before = next
+    }
+
+    return (pass, before.back + [from])
+}
+
+func canWalk(_ pass: [Int], _ real: [Int], _ connect: [[Int]]) {
+
+    var seen = [Bool](repeating: true, count: connect.count)
+
+    for r in real {
+        seen[r] = false
+    }
+
+    for p in pass {
+        seen[p] = true
+    }
+
+    for s in seen {
+        if !s {
+          print("\(s) doesn't visit")
+          return
+        }
+    }
+
+    next: for i in 0..<pass.count - 1 {
+        let a = pass[i]
+        let b = pass[i + 1]
+        for c in connect[a] {
+            if c == b {
+                continue next
+            }
+        }
+
+        print("\(a) can not reach \(b)")
+        return
+    }
+
+    print("OK")
+}
+
 var input0 = "8 5\n0 6 4 3 7\n0 1\n0 2\n2 3\n4 3\n6 1\n1 5\n7 3"
 // 7
 var input1 = "2 2\n0 1\n1 0"
@@ -166,29 +264,45 @@ var input13 = "100 8\n25 47 93 2 69 21 46 42\n99 87\n26 73\n45 11\n88 90\n12 67\
 //print("min \(min(0, 50, connect))")
 
 //let (M, N, real, connect) = initialize(input13)
-//let ways = calcWays(real[0], real, connect)
+//var ways = calcWays(real[0], real, connect)
 //let (tree, total) = makeTree(ways, M)
 //var copyWays = ways
-//let longest = calcLongest(real, &copyWays, tree)
+//var (longest, waysForPass) = calcLongest(real, &ways, tree)
 //let result = (total - (longest.count - 1)) * 2 + longest.count - 1
 //
 //print("M: \(M)")
 //print("N: \(N)")
 //print("real: \(real)")
 //print("connect: \(connect)")
-//print("ways: \(ways)")
-//print("ways count: \(ways.count)")
+//print("ways: \(copyWays)")
+//print("ways count: \(copyWays.count)")
 //print("total: \(total)")
 //print("longest: \(longest)")
 //print("result: \(result)")
 //print("minCount: \(minCount)")
 //print("treeCount: \(treeCount)")
+//
+//let (pass, back) = walk(longest[0], tree)
+//print("pass \(pass)")
+//print("pass count \(pass.count - 1)")
+//canWalk(pass, connect)
 
 let (M, N, real, connect) = read()
 var ways = calcWays(real[0], real, connect)
 let (tree, total) = makeTree(ways, M)
-let longest = calcLongest(real, &ways, tree)
+var (longest, waysForPass) = calcLongest(real, &ways, tree)
 let result = (total - (longest.count - 1)) * 2 + longest.count - 1
+
+//print("M: \(M)")
+//print("N: \(N)")
+//print("ways count: \(copyWays.count)")
+//print("total: \(total)")
+//print("result: \(result)")
 //print("minCount: \(minCount)")
 //print("treeCount: \(treeCount)")
 print(result)
+
+//let (pass, back) = walk(longest[0], tree)
+////print("pass \(pass)")
+//print("pass count \(pass.count - 1)")
+//canWalk(pass, real, connect)
