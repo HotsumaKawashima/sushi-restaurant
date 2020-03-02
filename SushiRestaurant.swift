@@ -193,6 +193,6 @@ let total = calcTotal(ways, M)
 var copyWays = ways
 let longest = calcLongest(real, &copyWays, connect)
 let result = (total - (longest.count - 1)) * 2 + longest.count - 1
-print("minCount: \(minCount)")
-print("treeCount: \(treeCount)")
+//print("minCount: \(minCount)")
+//print("treeCount: \(treeCount)")
 print(result)
