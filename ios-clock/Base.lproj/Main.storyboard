@@ -3,6 +3,7 @@
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -27,7 +28,7 @@
             </objects>
             <point key="canvasLocation" x="1140.5797101449277" y="474.77678571428567"/>
         </scene>
-        <!--Root View Controller-->
+        <!--Title-->
         <scene sceneID="2HZ-Ss-VJg">
             <objects>
                 <tableViewController id="7WX-A5-URB" sceneMemberID="viewController">
@@ -50,11 +51,50 @@
                             <outlet property="delegate" destination="7WX-A5-URB" id="1Yk-GV-4M5"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Root View Controller" id="FXI-D4-jhr"/>
+                    <navigationItem key="navigationItem" title="Title" id="Ots-so-Ibm">
+                        <barButtonItem key="rightBarButtonItem" title="ADD" id="pYc-M7-KNx">
+                            <connections>
+                                <segue destination="8go-ia-A7j" kind="show" id="ash-t6-9Fj"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cLG-KT-3GX" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="3086" y="-604"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="j27-jn-HZM">
+            <objects>
+                <viewController id="8go-ia-A7j" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="GsH-aS-RE7">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="suM-wp-EQ8">
+                                <rect key="frame" x="0.0" y="88" width="414" height="725"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <searchBar key="tableFooterView" contentMode="redraw" id="0Rw-80-6lM">
+                                    <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                    <textInputTraits key="textInputTraits"/>
+                                </searchBar>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="uDZ-To-97B" firstAttribute="bottom" secondItem="suM-wp-EQ8" secondAttribute="bottom" id="0tF-Jz-hBq"/>
+                            <constraint firstItem="suM-wp-EQ8" firstAttribute="top" secondItem="uDZ-To-97B" secondAttribute="top" id="3pF-YT-4y1"/>
+                            <constraint firstItem="suM-wp-EQ8" firstAttribute="leading" secondItem="uDZ-To-97B" secondAttribute="leading" id="qqB-uS-nKu"/>
+                            <constraint firstItem="uDZ-To-97B" firstAttribute="trailing" secondItem="suM-wp-EQ8" secondAttribute="trailing" id="yDB-1w-48u"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="uDZ-To-97B"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="kGt-3K-FBz"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Udq-dn-Myl" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="4032" y="-604"/>
         </scene>
         <!--World Clock-->
         <scene sceneID="WCG-9y-834">
