@@ -28,21 +28,41 @@
             </objects>
             <point key="canvasLocation" x="1140.5797101449277" y="474.77678571428567"/>
         </scene>
-        <!--Table View Controller-->
+        <!--World Clock View Controller-->
         <scene sceneID="Lcs-9m-C7h">
             <objects>
-                <tableViewController id="g5c-V7-O2a" sceneMemberID="viewController">
+                <tableViewController id="g5c-V7-O2a" customClass="WorldClockViewController" customModule="ios_clock" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="6Og-3b-FyU">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="2Wz-id-hU0">
-                                <rect key="frame" x="0.0" y="28" width="414" height="43.5"/>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell" rowHeight="65" id="2Wz-id-hU0">
+                                <rect key="frame" x="0.0" y="28" width="414" height="65"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="2Wz-id-hU0" id="Tow-z2-JUS">
-                                    <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="414" height="65"/>
                                     <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XRG-OH-Uy9">
+                                            <rect key="frame" x="5" y="5" width="42" height="21"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" tag="2" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EPQ-9Z-0FI">
+                                            <rect key="frame" x="5" y="31" width="50" height="26"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="21"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="XRG-OH-Uy9" firstAttribute="top" secondItem="Tow-z2-JUS" secondAttribute="top" constant="5" id="Hig-qX-RNc"/>
+                                        <constraint firstItem="EPQ-9Z-0FI" firstAttribute="leading" secondItem="Tow-z2-JUS" secondAttribute="leading" constant="5" id="YRv-Ah-I5s"/>
+                                        <constraint firstItem="EPQ-9Z-0FI" firstAttribute="top" secondItem="XRG-OH-Uy9" secondAttribute="bottom" constant="5" id="edr-wo-kJ7"/>
+                                        <constraint firstItem="XRG-OH-Uy9" firstAttribute="leading" secondItem="Tow-z2-JUS" secondAttribute="leading" constant="5" id="zDL-Hw-FmF"/>
+                                    </constraints>
                                 </tableViewCellContentView>
                             </tableViewCell>
                         </prototypes>
@@ -52,7 +72,7 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" id="YAl-FM-JmY">
-                        <barButtonItem key="rightBarButtonItem" title="ADD" id="sQS-EO-uVj">
+                        <barButtonItem key="rightBarButtonItem" title="Add" id="sQS-EO-uVj">
                             <connections>
                                 <segue destination="8go-ia-A7j" kind="show" id="9WK-mO-mBM"/>
                             </connections>
@@ -61,7 +81,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="NEN-cG-dNq" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3141" y="-607"/>
+            <point key="canvasLocation" x="3140.579710144928" y="-607.36607142857144"/>
         </scene>
         <!--Select Timezone View Controller-->
         <scene sceneID="j27-jn-HZM">

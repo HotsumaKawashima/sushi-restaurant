@@ -31,7 +31,9 @@ class SelectTimezoneViewController: UIViewController, UITableViewDataSource, UIT
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let indexPath = tableView.indexPathForSelectedRow, filtered.indices.contains(indexPath.row) {
-            //Document.shared.addTimezone(filtered[indexPath.row])
+            let nav = self.navigationController
+            let wvc = (nav?.viewControllers[(nav?.viewControllers.count)! - 2]) as! WorldClockViewController
+            wvc.addTimezone(identifier: filtered[indexPath.row])
         }
         self.navigationController?.popViewController(animated: true)
     }
