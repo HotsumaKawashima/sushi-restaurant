@@ -28,7 +28,7 @@ class StopWatchViewController: UIViewController, UITableViewDelegate, UITableVie
     
     @IBAction func startStop(_ sender: Any) {
         if startStopWatch == true {
-            timer = Timer.scheduledTimer(timeInterval: 0.01, target: self, selector: Selector(("updateStopwatch")), userInfo: nil, repeats: true)
+            timer = Timer.scheduledTimer(timeInterval: 0.01, target: self, selector: #selector(self.updateStopwatch), userInfo: nil, repeats: true)
             
             startStopWatch = false
             startstopButton.setImage(UIImage(named: "StopButton.png"), for: UIControl.State.normal)
@@ -58,7 +58,7 @@ class StopWatchViewController: UIViewController, UITableViewDelegate, UITableVie
         stopwatchLabel.text = "00.00.00"
     }
     
-    func updateStopwatch(){
+    @objc func updateStopwatch(){
         
         fractions += 1
         if fractions == 100 {
